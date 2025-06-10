@@ -6,7 +6,7 @@ import WasteTypeSelector from "./components/WasteTypeSelector";
 
 function App() {
   const [currentStep, setCurrentStep] = useState<"home" | "wasteType">("home");
-  const [selectedAddress, setSelectedAddress] = useState<any>(null);
+  const [, setSelectedAddress] = useState<any>(null);
 
   return (
     <div className="w-full">
