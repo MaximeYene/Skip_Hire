@@ -880,7 +880,7 @@ const PermitCheck = ({ onBack, onContinue }: PermitCheckProps) => {
               variant="contained"
               onClick={handleFinalContinue}
               endIcon={<ArrowRight size={20} />}
-              disabled={isUploading}
+              disabled={isUploading || !uploadedImage}
             >
               Continue to Details
             </Button>

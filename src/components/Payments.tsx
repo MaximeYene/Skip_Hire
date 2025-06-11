@@ -283,7 +283,7 @@ const Payments = ({ onBack }: PaymentsProps) => {
             {/* Header Section */}
             <Box sx={{ mb: 6, textAlign: "center" }}>
               <Typography
-                variant="h3"
+                variant="h4"
                 component="h1"
                 sx={{
                   fontWeight: 700,

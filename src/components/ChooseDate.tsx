@@ -1,7 +1,9 @@
+// --- START OF FILE ChooseDate.tsx ---
+
 "use client";
 
-import React, { useState, useMemo } from "react";
-import { ArrowLeft, ArrowRight, CalendarIcon, ChevronLeft, ChevronRight, Clock, MapPin } from 'lucide-react';
+import { useState } from "react";
+import { ArrowLeft, ArrowRight, Clock, MapPin } from 'lucide-react';
 import {
   Card,
   Typography,
@@ -10,7 +12,6 @@ import {
   Container,
   Chip,
   Fade,
-  IconButton,
   Divider,
   Alert,
   AlertTitle,
@@ -18,17 +19,9 @@ import {
 } from "@mui/material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import StepperDemo from "./Stepper-demo";
+import { Calendar } from "./Calendar";
 
 // --- Helper Components & Types ---
-
-type CalendarProps = {
-  displayMonth: Date;
-  selectedDate: Date | null;
-  minDate?: Date;
-  onMonthChange: (newMonth: Date) => void;
-  onDateSelect: (date: Date) => void;
-  title?: string;
-};
 
 interface ChooseDateProps {
   onBack: () => void;
@@ -125,211 +118,60 @@ const darkTheme = createTheme({
   },
 });
 
-// Composant Calendar amélioré avec Material UI et Tailwind
-const Calendar: React.FC<CalendarProps> = ({
-  displayMonth,
-  selectedDate,
-  minDate,
-  onMonthChange,
-  onDateSelect,
-  title,
-}) => {
-  const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-
-  const monthData = useMemo(() => {
-    const year = displayMonth.getFullYear();
-    const month = displayMonth.getMonth();
-    const firstDayOfMonth = new Date(year, month, 1);
-    const lastDayOfMonth = new Date(year, month + 1, 0);
-    const daysInMonth = lastDayOfMonth.getDate();
-    const startDayOfWeek = firstDayOfMonth.getDay();
-
-    const dates = [];
-    for (let i = 0; i < startDayOfWeek; i++) {
-      dates.push(null);
-    }
-    for (let i = 1; i <= daysInMonth; i++) {
-      dates.push(new Date(year, month, i));
-    }
-    return dates;
-  }, [displayMonth]);
-
-  const handlePrevMonth = () => {
-    onMonthChange(
-      new Date(displayMonth.getFullYear(), displayMonth.getMonth() - 1, 1)
-    );
-  };
-
-  const handleNextMonth = () => {
-    onMonthChange(
-      new Date(displayMonth.getFullYear(), displayMonth.getMonth() + 1, 1)
-    );
-  };
-
-  const isSameDay = (date1: Date | null, date2: Date | null) => {
-    if (!date1 || !date2) return false;
-    return (
-      date1.getFullYear() === date2.getFullYear() &&
-      date1.getMonth() === date2.getMonth() &&
-      date1.getDate() === date2.getDate()
-    );
-  };
-
-  const isToday = (date: Date) => {
-    const today = new Date();
-    return isSameDay(date, today);
-  };
-
-  return (
-    <Card sx={{ p: { xs: 2, sm: 3 }, maxWidth: 400, mx: "auto" }}>
-      {title && (
-        <Typography
-          variant="h6"
-          component="h3"
-          sx={{
-            fontWeight: 600,
-            mb: 2,
-            color: "text.primary",
-            display: "flex",
-            alignItems: "center",
-            gap: 1,
-          }}
-        >
-          <CalendarIcon size={20} />
-          {title}
-        </Typography>
-      )}
-
-      {/* Header du calendrier */}
-      <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 3 }}>
-        <IconButton onClick={handlePrevMonth} size="small">
-          <ChevronLeft size={20} />
-        </IconButton>
-        
-        <Typography
-          variant="h6"
-          sx={{
-            fontWeight: 600,
-            color: "text.primary",
-            textTransform: "capitalize",
-          }}
-        >
-          {displayMonth.toLocaleString("en-US", {
-            month: "long",
-            year: "numeric",
-          })}
-        </Typography>
-        
-        <IconButton onClick={handleNextMonth} size="small">
-          <ChevronRight size={20} />
-        </IconButton>
-      </Box>
-
-      {/* Grille des jours avec Tailwind */}
-      <div className="grid grid-cols-7 gap-0.5">
-        {/* En-têtes des jours de la semaine */}
-        {daysOfWeek.map((day) => (
-          <div key={day} className="flex justify-center">
-            <Typography
-              variant="caption"
-              sx={{
-                fontWeight: 600,
-                color: "text.secondary",
-                textAlign: "center",
-                py: 1,
-                width: "100%",
-              }}
-            >
-              {day}
-            </Typography>
-          </div>
-        ))}
-        
-        {/* Dates du mois */}
-        {monthData.map((date, index) => {
-          if (!date) {
-            return <div key={`empty-${index}`} />;
-          }
-          
-          const isSelected = isSameDay(date, selectedDate);
-          const isPast = minDate ? date < minDate && !isSameDay(date, minDate) : false;
-          const todayDate = isToday(date);
-
-          return (
-            <div key={date.toISOString()} className="flex justify-center">
-              <Button
-                disabled={isPast}
-                onClick={() => !isPast && onDateSelect(date)}
-                sx={{
-                  minWidth: { xs: 32, sm: 40 },
-                  height: { xs: 32, sm: 40 },
-                  borderRadius: "50%",
-                  p: 0,
-                  fontSize: { xs: "0.75rem", sm: "0.875rem" },
-                  fontWeight: isSelected ? 700 : todayDate ? 600 : 400,
-                  color: isPast 
-                    ? "text.disabled" 
-                    : isSelected 
-                    ? "primary.contrastText" 
-                    : todayDate 
-                    ? "primary.main" 
-                    : "text.primary",
-                  backgroundColor: isSelected 
-                    ? "primary.main" 
-                    : todayDate 
-                    ? "rgba(99, 102, 241, 0.1)" 
-                    : "transparent",
-                  border: todayDate && !isSelected ? "1px solid" : "none",
-                  borderColor: "primary.main",
-                  "&:hover": {
-                    backgroundColor: isSelected 
-                      ? "primary.dark" 
-                      : isPast 
-                      ? "transparent" 
-                      : "rgba(99, 102, 241, 0.1)",
-                  },
-                  "&:disabled": {
-                    color: "text.disabled",
-                  },
-                }}
-              >
-                {date.getDate()}
-              </Button>
-            </div>
-          );
-        })}
-      </div>
-    </Card>
-  );
+// --- NOUVELLE FONCTION UTILITAIRE ---
+/**
+ * Trouve le prochain jour de la semaine disponible (pas un samedi ou un dimanche)
+ * à partir de la date fournie (inclusive).
+ * @param date - La date de départ
+ * @returns La première date disponible qui n'est pas un week-end.
+ */
+const getNextAvailableWeekday = (date: Date): Date => {
+  const newDate = new Date(date);
+  // getDay() renvoie 0 pour Dimanche et 6 pour Samedi
+  while (newDate.getDay() === 0 || newDate.getDay() === 6) {
+    newDate.setDate(newDate.getDate() + 1);
+  }
+  return newDate;
 };
+
 
 // --- Composant Principal ---
 const ChooseDate = ({ onBack, onContinue }: ChooseDateProps) => {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
+  // --- MODIFICATION ICI ---
+  // S'assure que la date de livraison initiale est un jour de semaine
   const [deliveryDate, setDeliveryDate] = useState<Date>(() => {
     const tomorrow = new Date(today);
     tomorrow.setDate(today.getDate() + 1);
-    return tomorrow;
+    return getNextAvailableWeekday(tomorrow);
   });
 
+  // --- MODIFICATION ICI ---
+  // S'assure que la date de collecte initiale est un jour de semaine
   const [collectionDate, setCollectionDate] = useState<Date>(() => {
     const initialCollection = new Date(deliveryDate);
     initialCollection.setDate(deliveryDate.getDate() + 7);
-    return initialCollection;
+    return getNextAvailableWeekday(initialCollection);
   });
 
   const [displayDeliveryMonth, setDisplayDeliveryMonth] = useState(deliveryDate);
   const [displayCollectionMonth, setDisplayCollectionMonth] = useState(collectionDate);
   const [isCollectionCalendarVisible, setCollectionCalendarVisible] = useState(false);
 
+  // --- MODIFICATION ICI ---
+  // S'assure que la date de collecte calculée est un jour de semaine
   const handleSelectDeliveryDate = (date: Date) => {
     setDeliveryDate(date);
     const newCollectionDate = new Date(date);
     newCollectionDate.setDate(date.getDate() + 7);
-    setCollectionDate(newCollectionDate);
-    setDisplayCollectionMonth(newCollectionDate);
+
+    // Ajuste la date de collecte au prochain jour ouvrable si elle tombe un week-end
+    const availableCollectionDate = getNextAvailableWeekday(newCollectionDate);
+    
+    setCollectionDate(availableCollectionDate);
+    setDisplayCollectionMonth(availableCollectionDate);
   };
 
   const handleSelectCollectionDate = (date: Date) => {
@@ -392,7 +234,7 @@ const ChooseDate = ({ onBack, onContinue }: ChooseDateProps) => {
               </Typography>
             </Box>
 
-            {/* Calendars Section with Tailwind */}
+            {/* Calendars Section */}
             <div className="flex flex-col lg:flex-row gap-4 mb-4">
               {/* Delivery Date Section */}
               <div className="w-full lg:w-1/2">
@@ -447,7 +289,7 @@ const ChooseDate = ({ onBack, onContinue }: ChooseDateProps) => {
                 <Fade in timeout={600}>
                   <Box>
                     <Typography
-                      variant="h5"
+                      variant="h4"
                       component="h2"
                       sx={{
                         fontWeight: 600,

@@ -223,7 +223,7 @@ const handleSelectSkip = (id: number) => {
             {/* Header Section */}
             <Box sx={{ mb: 6, textAlign: "center" }}>
               <Typography
-                variant="h4"
+                variant="h3"
                 component="h1"
                 sx={{
                   fontWeight: 700,
@@ -245,7 +245,7 @@ const handleSelectSkip = (id: number) => {
                   lineHeight: 1.6,
                 }}
               >
-                Choose the right skip size for your project — prices include delivery and collection, excluding VAT.
+                Select the ideal skip size for your project. All prices exclude VAT and include delivery and collection.
               </Typography>
             </Box>
 
@@ -356,63 +356,96 @@ const handleSelectSkip = (id: number) => {
                         <Box
                           sx={{
                             height: { xs: 160, sm: 220 },
-                            background: "linear-gradient(135deg, #334155 0%, #475569 100%)",
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
                             position: "relative",
                             overflow: "hidden",
                           }}
                         >
-                          {/* Decorative elements */}
+                          <img
+                            src={skip.size <= 12 ? "/benne-a-boue.jpg" : "/1200_900-Vue 3_4 avant Benne étanche 20 m3.webp"}
+                            alt={`${skip.size} yard skip`}
+                            style={{
+                              width: "100%",
+                              height: "100%",
+                              objectFit: "cover",
+                              display: "block",
+                            }}
+                            onError={(e) => {
+                              // Fallback en cas d'erreur de chargement d'image
+                              const target = e.target as HTMLImageElement;
+                              target.style.display = "none";
+                              target.parentElement!.innerHTML = `
+                                <div style="
+                                  width: 100%;
+                                  height: 100%;
+                                  background: linear-gradient(135deg, #334155 0%, #475569 100%);
+                                  display: flex;
+                                  align-items: center;
+                                  justify-content: center;
+                                  position: relative;
+                                  overflow: hidden;
+                                ">
+                                  <div style="
+                                    position: absolute;
+                                    top: -20px;
+                                    right: -20px;
+                                    width: 100px;
+                                    height: 100px;
+                                    border-radius: 50%;
+                                    background: rgba(99, 102, 241, 0.1);
+                                  "></div>
+                                  <div style="
+                                    position: absolute;
+                                    bottom: -30px;
+                                    left: -30px;
+                                    width: 80px;
+                                    height: 80px;
+                                    border-radius: 50%;
+                                    background: rgba(236, 72, 153, 0.1);
+                                  "></div>
+                                  <div style="text-align: center; z-index: 1;">
+                                    <div style="
+                                      font-weight: 800;
+                                      font-size: 2.5rem;
+                                      background: linear-gradient(135deg, #f8fafc 0%, #94a3b8 100%);
+                                      background-clip: text;
+                                      -webkit-background-clip: text;
+                                      -webkit-text-fill-color: transparent;
+                                      margin-bottom: 8px;
+                                    ">${skip.size}</div>
+                                    <div style="
+                                      color: #94a3b8;
+                                      font-weight: 600;
+                                      letter-spacing: 0.1em;
+                                    ">YARD SKIP</div>
+                                  </div>
+                                </div>
+                              `;
+                            }}
+                          />
+                          
+                          {/* Overlay avec le numéro de la benne */}
                           <Box
                             sx={{
                               position: "absolute",
-                              top: -20,
-                              right: -20,
-                              width: 100,
-                              height: 100,
-                              borderRadius: "50%",
-                              background: "rgba(99, 102, 241, 0.1)",
+                              bottom: 0,
+                              left: 0,
+                              right: 0,
+                              background: "linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.4) 50%, transparent 100%)",
+                              p: 2,
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
                             }}
-                          />
-                          <Box
-                            sx={{
-                              position: "absolute",
-                              bottom: -30,
-                              left: -30,
-                              width: 80,
-                              height: 80,
-                              borderRadius: "50%",
-                              background: "rgba(236, 72, 153, 0.1)",
-                            }}
-                          />
-
-                          {/* Skip Size Display */}
-                          <Box sx={{ textAlign: "center", zIndex: 1 }}>
+                          >
                             <Typography
-                              variant="h2"
+                              variant="h4"
                               sx={{
                                 fontWeight: 800,
-                                fontSize: { xs: "2rem", sm: "2.5rem", md: "3rem" },
-                                background: "linear-gradient(135deg, #f8fafc 0%, #94a3b8 100%)",
-                                backgroundClip: "text",
-                                WebkitBackgroundClip: "text",
-                                WebkitTextFillColor: "transparent",
-                                mb: 1,
+                                color: "white",
+                                textShadow: "0 2px 4px rgba(0,0,0,0.5)",
                               }}
                             >
-                              {skip.size}
-                            </Typography>
-                            <Typography
-                              variant="h6"
-                              sx={{
-                                color: "#94a3b8",
-                                fontWeight: 600,
-                                letterSpacing: "0.1em",
-                              }}
-                            >
-                              YARD SKIP
+                              {skip.size} YARD
                             </Typography>
                           </Box>
                         </Box>
