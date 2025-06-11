@@ -27,6 +27,7 @@ import {
 } from "@mui/material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import StepperDemo from "./Stepper-demo";
+import { countries } from "../datas/countries";
 
 // --- Types ---
 interface Skip {
@@ -153,14 +154,6 @@ const darkTheme = createTheme({
   },
 });
 
-// Liste d'exemple de pays
-const countries = [
-  { code: 'GB', name: 'United Kingdom' },
-  { code: 'US', name: 'United States' },
-  { code: 'FR', name: 'France' },
-  { code: 'DE', name: 'Germany' },
-  { code: 'IE', name: 'Ireland' },
-];
 
 const Payments = ({ onBack }: PaymentsProps) => {
   // --- State Management ---
