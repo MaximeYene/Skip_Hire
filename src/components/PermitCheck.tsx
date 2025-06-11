@@ -366,7 +366,7 @@ const PermitCheck = ({ onBack, onContinue }: PermitCheckProps) => {
             </Button>
             <Button
               variant="contained"
-              onClick={handleFinalContinue}
+              onClick={onContinue}
               endIcon={<ArrowRight size={20} />}
             >
               Continue
