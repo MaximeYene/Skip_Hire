@@ -4,10 +4,11 @@ import "./App.css";
 import Home from "./components/Home";
 import WasteTypeSelector from "./components/WasteTypeSelector";
 import SelectSkip from "./components/SelectSkip"; // 1. Importer le nouveau composant
+import PermitCheck from "./components/PermitCheck";
 
 function App() {
   // 2. Ajouter 'selectSkip' comme étape possible
-  const [currentStep, setCurrentStep] = useState<"home" | "wasteType" | "selectSkip">("home");
+  const [currentStep, setCurrentStep] = useState<"home" | "wasteType" | "selectSkip" | "permitCheck">("home");
   const [, setSelectedAddress] = useState<any>(null);
   const [, setWasteSelection] = useState<string[]>([]); // Ajout pour stocker les sélections
 
@@ -39,6 +40,14 @@ function App() {
           // 5. Afficher le composant SelectSkip et lui donner un moyen de revenir en arrière
           <SelectSkip 
             onBack={() => setCurrentStep("wasteType")}
+            onContinue={() => setCurrentStep("permitCheck")}
+          />
+        );
+      case "permitCheck":
+        return (
+          // 5. Afficher le composant PermitCheck et lui donner un moyen de revenir en arrière
+          <PermitCheck
+          onBack={() => setCurrentStep("selectSkip")} 
           />
         );
       default:

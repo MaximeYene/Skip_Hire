@@ -191,9 +191,19 @@ const SelectSkip = ({ onBack, onContinue }: SelectSkipProps) => {
       })
   }, [])
 
-  const handleSelectSkip = (id: number) => {
-    setSelectedSkipId(id === selectedSkipId ? null : id)
+  // Dans la fonction handleSelectSkip
+const handleSelectSkip = (id: number) => {
+  const newSelectedId = id === selectedSkipId ? null : id
+  setSelectedSkipId(newSelectedId)
+  
+  // Stocker le skip sélectionné
+  if (newSelectedId) {
+    const selected = skips.find(skip => skip.id === newSelectedId)
+    if (selected) {
+      localStorage.setItem("selectedSkip", JSON.stringify(selected))
+    }
   }
+}
 
   const handleContinue = () => {
     if (selectedSkipId && onContinue) {
