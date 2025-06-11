@@ -88,8 +88,8 @@ Calendar.tsx: Reusable calendar component designed to be controlled by a parent 
 To run this project locally, follow these steps:
 
 Clone the repo:
-git clone https://github.com/your-name/your-repo.git
-cd your-repo
+git clone https://github.com/MaximeYene/Skip_Hire.git
+cd skip_here
 
 Install dependencies:
 npm install
