@@ -13,7 +13,7 @@ const StepperDemo = ({ currentStep, children }: StepperDemoProps) => {
     <div className="min-h-screen bg-slate-950">
       <Stepper steps={steps} currentStep={currentStep} />
 
-      <div className="max-w-4xl mx-auto p-8">
+      <div className="max-w-6xl mx-auto p-8">
         <motion.div
           key={currentStep}
           initial={{ opacity: 0, x: 20 }}
