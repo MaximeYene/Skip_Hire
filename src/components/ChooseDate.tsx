@@ -1,33 +1,138 @@
+"use client";
+
 import React, { useState, useMemo } from "react";
+import { ArrowLeft, ArrowRight, CalendarIcon, ChevronLeft, ChevronRight, Clock, MapPin } from 'lucide-react';
+import {
+  Card,
+  Typography,
+  Button,
+  Box,
+  Container,
+  Chip,
+  Fade,
+  IconButton,
+  Divider,
+  Alert,
+  AlertTitle,
+  Collapse,
+} from "@mui/material";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
 import StepperDemo from "./Stepper-demo";
 
 // --- Helper Components & Types ---
 
 type CalendarProps = {
-  // Le mois actuellement affiché dans le calendrier (ex: new Date('2025-06-01'))
   displayMonth: Date;
-  // La date actuellement sélectionnée, pour la surligner
   selectedDate: Date | null;
-  // La date minimale sélectionnable (pour empêcher de choisir dans le passé)
   minDate?: Date;
-  // Callback pour changer le mois affiché
   onMonthChange: (newMonth: Date) => void;
-  // Callback quand une date est choisie
   onDateSelect: (date: Date) => void;
+  title?: string;
 };
 
-interface chooseDateProps {
+interface ChooseDateProps {
   onBack: () => void;
   onContinue?: () => void;
 }
 
-// Un composant réutilisable pour le calendrier
+// Thème sombre moderne - Correspondant aux autres composants
+const darkTheme = createTheme({
+  palette: {
+    mode: "dark",
+    primary: {
+      main: "#6366f1",
+      light: "#818cf8",
+      dark: "#4f46e5",
+    },
+    secondary: {
+      main: "#ec4899",
+    },
+    success: {
+      main: "#10b981",
+    },
+    warning: {
+      main: "#f59e0b",
+    },
+    error: {
+      main: "#ef4444",
+    },
+    background: {
+      default: "#0f172a",
+      paper: "#1e293b",
+    },
+    text: {
+      primary: "#f8fafc",
+      secondary: "#cbd5e1",
+    },
+  },
+  typography: {
+    fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+    h3: {
+      fontWeight: 700,
+      letterSpacing: "-0.025em",
+    },
+    h5: {
+      fontWeight: 600,
+      letterSpacing: "-0.01em",
+    },
+  },
+  components: {
+    MuiCard: {
+      styleOverrides: {
+        root: {
+          backgroundColor: "#1e293b",
+          border: "1px solid #334155",
+          borderRadius: "16px",
+          transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+          overflow: "hidden",
+        },
+      },
+    },
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          borderRadius: "12px",
+          textTransform: "none",
+          fontWeight: 600,
+          padding: "12px 24px",
+        },
+        outlined: {
+          borderColor: "#475569",
+          color: "#cbd5e1",
+          "&:hover": {
+            backgroundColor: "rgba(99, 102, 241, 0.1)",
+            borderColor: "#6366f1",
+          },
+        },
+        contained: {
+          boxShadow: "0 4px 14px 0 rgba(99, 102, 241, 0.3)",
+          "&:hover": {
+            boxShadow: "0 6px 20px 0 rgba(99, 102, 241, 0.4)",
+          },
+        },
+      },
+    },
+    MuiIconButton: {
+      styleOverrides: {
+        root: {
+          borderRadius: "12px",
+          "&:hover": {
+            backgroundColor: "rgba(99, 102, 241, 0.1)",
+          },
+        },
+      },
+    },
+  },
+});
+
+// Composant Calendar amélioré avec Material UI et Tailwind
 const Calendar: React.FC<CalendarProps> = ({
   displayMonth,
   selectedDate,
   minDate,
   onMonthChange,
   onDateSelect,
+  title,
 }) => {
   const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
@@ -37,7 +142,7 @@ const Calendar: React.FC<CalendarProps> = ({
     const firstDayOfMonth = new Date(year, month, 1);
     const lastDayOfMonth = new Date(year, month + 1, 0);
     const daysInMonth = lastDayOfMonth.getDate();
-    const startDayOfWeek = firstDayOfMonth.getDay(); // 0 pour Dimanche, 1 pour Lundi, etc.
+    const startDayOfWeek = firstDayOfMonth.getDay();
 
     const dates = [];
     for (let i = 0; i < startDayOfWeek; i++) {
@@ -70,86 +175,138 @@ const Calendar: React.FC<CalendarProps> = ({
     );
   };
 
+  const isToday = (date: Date) => {
+    const today = new Date();
+    return isSameDay(date, today);
+  };
+
   return (
-    // MODIFICATION: Fond de la carte, bordure et ombre adaptés au thème sombre
-    <div className="bg-slate-800 p-4 rounded-lg border border-slate-700 w-full max-w-sm mx-auto">
-      {/* Header du calendrier */}
-      <div className="flex justify-between items-center mb-4">
-        {/* MODIFICATION: Style des boutons de navigation du mois */}
-        <button
-          onClick={handlePrevMonth}
-          className="p-2 rounded-full hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+    <Card sx={{ p: { xs: 2, sm: 3 }, maxWidth: 400, mx: "auto" }}>
+      {title && (
+        <Typography
+          variant="h6"
+          component="h3"
+          sx={{
+            fontWeight: 600,
+            mb: 2,
+            color: "text.primary",
+            display: "flex",
+            alignItems: "center",
+            gap: 1,
+          }}
         >
-          ← {/* Left Arrow */}
-        </button>
-        {/* MODIFICATION: Couleur du texte */}
-        <span className="text-lg font-semibold text-slate-200">
-          {displayMonth.toLocaleString("fr-FR", {
+          <CalendarIcon size={20} />
+          {title}
+        </Typography>
+      )}
+
+      {/* Header du calendrier */}
+      <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 3 }}>
+        <IconButton onClick={handlePrevMonth} size="small">
+          <ChevronLeft size={20} />
+        </IconButton>
+        
+        <Typography
+          variant="h6"
+          sx={{
+            fontWeight: 600,
+            color: "text.primary",
+            textTransform: "capitalize",
+          }}
+        >
+          {displayMonth.toLocaleString("en-US", {
             month: "long",
             year: "numeric",
           })}
-        </span>
-        <button
-          onClick={handleNextMonth}
-          className="p-2 rounded-full hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-        >
-          → {/* Right Arrow */}
-        </button>
-      </div>
+        </Typography>
+        
+        <IconButton onClick={handleNextMonth} size="small">
+          <ChevronRight size={20} />
+        </IconButton>
+      </Box>
 
-      {/* Grille des jours */}
-      <div className="grid grid-cols-7 gap-1 text-center">
-        {/* MODIFICATION: Couleur du texte des jours de la semaine */}
+      {/* Grille des jours avec Tailwind */}
+      <div className="grid grid-cols-7 gap-0.5">
+        {/* En-têtes des jours de la semaine */}
         {daysOfWeek.map((day) => (
-          <div key={day} className="font-medium text-xs text-slate-400">
-            {day}
+          <div key={day} className="flex justify-center">
+            <Typography
+              variant="caption"
+              sx={{
+                fontWeight: 600,
+                color: "text.secondary",
+                textAlign: "center",
+                py: 1,
+                width: "100%",
+              }}
+            >
+              {day}
+            </Typography>
           </div>
         ))}
+        
+        {/* Dates du mois */}
         {monthData.map((date, index) => {
           if (!date) {
             return <div key={`empty-${index}`} />;
           }
+          
           const isSelected = isSameDay(date, selectedDate);
-          const isPast = minDate
-            ? date < minDate && !isSameDay(date, minDate)
-            : false;
-
-          // MODIFICATION: Classes des boutons de date pour le thème sombre
-          const buttonClasses = `
-            w-10 h-10 flex items-center justify-center rounded-full transition-colors
-            ${
-              isPast
-                ? "text-slate-600 cursor-not-allowed"
-                : "hover:bg-slate-700"
-            }
-            ${
-              isSelected
-                ? "bg-indigo-500 text-white font-bold"
-                : "text-slate-300"
-            }
-          `;
+          const isPast = minDate ? date < minDate && !isSameDay(date, minDate) : false;
+          const todayDate = isToday(date);
 
           return (
-            <button
-              key={date.toISOString()}
-              disabled={isPast}
-              onClick={() => !isPast && onDateSelect(date)}
-              className={buttonClasses}
-            >
-              {date.getDate()}
-            </button>
+            <div key={date.toISOString()} className="flex justify-center">
+              <Button
+                disabled={isPast}
+                onClick={() => !isPast && onDateSelect(date)}
+                sx={{
+                  minWidth: { xs: 32, sm: 40 },
+                  height: { xs: 32, sm: 40 },
+                  borderRadius: "50%",
+                  p: 0,
+                  fontSize: { xs: "0.75rem", sm: "0.875rem" },
+                  fontWeight: isSelected ? 700 : todayDate ? 600 : 400,
+                  color: isPast 
+                    ? "text.disabled" 
+                    : isSelected 
+                    ? "primary.contrastText" 
+                    : todayDate 
+                    ? "primary.main" 
+                    : "text.primary",
+                  backgroundColor: isSelected 
+                    ? "primary.main" 
+                    : todayDate 
+                    ? "rgba(99, 102, 241, 0.1)" 
+                    : "transparent",
+                  border: todayDate && !isSelected ? "1px solid" : "none",
+                  borderColor: "primary.main",
+                  "&:hover": {
+                    backgroundColor: isSelected 
+                      ? "primary.dark" 
+                      : isPast 
+                      ? "transparent" 
+                      : "rgba(99, 102, 241, 0.1)",
+                  },
+                  "&:disabled": {
+                    color: "text.disabled",
+                  },
+                }}
+              >
+                {date.getDate()}
+              </Button>
+            </div>
           );
         })}
       </div>
-    </div>
+    </Card>
   );
 };
 
 // --- Composant Principal ---
-
-const ChooseDate = ({ onBack, onContinue }: chooseDateProps) => {
+const ChooseDate = ({ onBack, onContinue }: ChooseDateProps) => {
   const today = new Date();
-  today.setHours(0, 0, 0, 0); // Normalise à minuit pour les comparaisons
+  today.setHours(0, 0, 0, 0);
 
   const [deliveryDate, setDeliveryDate] = useState<Date>(() => {
     const tomorrow = new Date(today);
@@ -163,12 +320,9 @@ const ChooseDate = ({ onBack, onContinue }: chooseDateProps) => {
     return initialCollection;
   });
 
-  const [displayDeliveryMonth, setDisplayDeliveryMonth] =
-    useState(deliveryDate);
-  const [displayCollectionMonth, setDisplayCollectionMonth] =
-    useState(collectionDate);
-  const [isCollectionCalendarVisible, setCollectionCalendarVisible] =
-    useState(false);
+  const [displayDeliveryMonth, setDisplayDeliveryMonth] = useState(deliveryDate);
+  const [displayCollectionMonth, setDisplayCollectionMonth] = useState(collectionDate);
+  const [isCollectionCalendarVisible, setCollectionCalendarVisible] = useState(false);
 
   const handleSelectDeliveryDate = (date: Date) => {
     setDeliveryDate(date);
@@ -192,102 +346,284 @@ const ChooseDate = ({ onBack, onContinue }: chooseDateProps) => {
   };
 
   const handleContinue = () => {
-    // Sauvegarde les dates sélectionnées dans localStorage
     localStorage.setItem("deliveryDate", deliveryDate.toISOString());
     localStorage.setItem("collectionDate", collectionDate.toISOString());
-    // Appelle la fonction pour passer à l'étape suivante
     if (onContinue) {
       onContinue();
     }
   };
 
+  const getDaysDifference = (date1: Date, date2: Date) => {
+    const diffTime = Math.abs(date2.getTime() - date1.getTime());
+    return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  };
+
   return (
-    // MODIFICATION: Fond général et couleur de texte par défaut pour le thème sombre
-    <div className="min-h-screen bg-slate-900 text-slate-100">
+    <ThemeProvider theme={darkTheme}>
       <StepperDemo currentStep="Choose Date">
-        {/* MODIFICATION: Fond de la carte principale et ombre adaptée */}
-        <div className="max-w-2xl mx-auto bg-slate-800 rounded-xl shadow-lg p-6 sm:p-8 space-y-8">
-          <div>
-            {/* MODIFICATION: Couleurs du titre et du paragraphe */}
-            <h1 className="text-3xl font-bold text-slate-100">
-              Choose Your Delivery Date
-            </h1>
-            <p className="mt-2 text-slate-400">
-              Select your preferred skip delivery date. We'll aim to deliver
-              between 7am and 6pm on your chosen day.
-            </p>
-          </div>
-
-          <div className="space-y-4">
-            {/* MODIFICATION: Couleur du sous-titre */}
-            <h2 className="text-xl font-semibold text-slate-200">
-              Delivery Date
-            </h2>
-            <Calendar
-              displayMonth={displayDeliveryMonth}
-              onMonthChange={setDisplayDeliveryMonth}
-              selectedDate={deliveryDate}
-              onDateSelect={handleSelectDeliveryDate}
-              minDate={today}
-            />
-          </div>
-
-          <div className="space-y-4">
-            <h2 className="text-xl font-semibold text-slate-200">
-              Collection Date
-            </h2>
-            {/* MODIFICATION: Bordure et fond de la zone de date de collecte */}
-            <div className="flex items-center justify-between p-4 border border-slate-700 rounded-lg bg-slate-900/50">
-              <div>
-                {/* MODIFICATION: Couleur du texte pour la date et le bouton "Change" */}
-                <p className="font-semibold text-indigo-400">
-                  {formatFullDate(collectionDate)}
-                </p>
-                <p className="text-sm text-slate-400 mt-1">
-                  We'll collect your skip on this date. Please ensure it's
-                  accessible.
-                </p>
-              </div>
-              <button
-                onClick={() =>
-                  setCollectionCalendarVisible(!isCollectionCalendarVisible)
-                }
-                className="text-indigo-400 font-semibold hover:underline focus:outline-none"
+        <Container maxWidth="xl" sx={{ px: { xs: 2, sm: 3 }, py: { xs: 4, md: 8 }, pb: { xs: 16, sm: 12 } }}>
+          <Box sx={{ color: "text.primary", maxWidth: "lg", mx: "auto" }}>
+            {/* Header Section */}
+            <Box sx={{ mb: 6, textAlign: "center" }}>
+              <Typography
+                variant="h3"
+                component="h1"
+                sx={{
+                  fontWeight: 700,
+                  mb: 2,
+                  background: "linear-gradient(135deg, #f8fafc 0%, #cbd5e1 100%)",
+                  backgroundClip: "text",
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                }}
               >
-                {isCollectionCalendarVisible ? "Hide" : "Change"}
-              </button>
+                Choose Your Delivery & Collection Dates
+              </Typography>
+              <Typography
+                variant="h6"
+                sx={{
+                  color: "text.secondary",
+                  maxWidth: "600px",
+                  mx: "auto",
+                  lineHeight: 1.6,
+                }}
+              >
+                Select your preferred skip delivery date. We'll aim to deliver between 7am and 6pm on your chosen day.
+              </Typography>
+            </Box>
+
+            {/* Calendars Section with Tailwind */}
+            <div className="flex flex-col lg:flex-row gap-4 mb-4">
+              {/* Delivery Date Section */}
+              <div className="w-full lg:w-1/2">
+                <Fade in timeout={400}>
+                  <Box>
+                    <Typography
+                      variant="h5"
+                      component="h2"
+                      sx={{
+                        fontWeight: 600,
+                        mb: 3,
+                        color: "text.primary",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 1,
+                      }}
+                    >
+                      <MapPin size={24} color="#6366f1" />
+                      Delivery Date
+                    </Typography>
+                    
+                    <Calendar
+                      displayMonth={displayDeliveryMonth}
+                      onMonthChange={setDisplayDeliveryMonth}
+                      selectedDate={deliveryDate}
+                      onDateSelect={handleSelectDeliveryDate}
+                      minDate={today}
+                    />
+                    
+                    <Alert 
+                      severity="info" 
+                      sx={{ 
+                        mt: 3,
+                        borderRadius: 3,
+                        backgroundColor: "rgba(99, 102, 241, 0.1)",
+                        border: "1px solid rgba(99, 102, 241, 0.2)",
+                      }}
+                    >
+                      <Typography variant="body2">
+                        <strong>Selected:</strong> {formatFullDate(deliveryDate)}
+                      </Typography>
+                      <Typography variant="body2" sx={{ mt: 1 }}>
+                        Delivery window: 7:00 AM - 6:00 PM
+                      </Typography>
+                    </Alert>
+                  </Box>
+                </Fade>
+              </div>
+
+              {/* Collection Date Section */}
+              <div className="w-full lg:w-1/2">
+                <Fade in timeout={600}>
+                  <Box>
+                    <Typography
+                      variant="h5"
+                      component="h2"
+                      sx={{
+                        fontWeight: 600,
+                        mb: 3,
+                        color: "text.primary",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 1,
+                      }}
+                    >
+                      <Clock size={24} color="#ec4899" />
+                      Collection Date
+                    </Typography>
+
+                    <Card sx={{ p: 3, mb: 3 }}>
+                      <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", mb: 2 }}>
+                        <Box sx={{ flex: 1 }}>
+                          <Typography
+                            variant="h6"
+                            sx={{
+                              fontWeight: 600,
+                              color: "secondary.main",
+                              mb: 1,
+                            }}
+                          >
+                            {formatFullDate(collectionDate)}
+                          </Typography>
+                          
+                          <Chip
+                            label={`${getDaysDifference(deliveryDate, collectionDate)} days hire period`}
+                            color="secondary"
+                            size="small"
+                            sx={{ mb: 2 }}
+                          />
+                          
+                          <Typography variant="body2" color="text.secondary">
+                            We'll collect your skip on this date. Please ensure it's accessible and ready for collection.
+                          </Typography>
+                        </Box>
+                        
+                        <Button
+                          variant="outlined"
+                          size="small"
+                          onClick={() => setCollectionCalendarVisible(!isCollectionCalendarVisible)}
+                          sx={{ ml: 2 }}
+                        >
+                          {isCollectionCalendarVisible ? "Hide" : "Change"}
+                        </Button>
+                      </Box>
+                    </Card>
+
+                    <Collapse in={isCollectionCalendarVisible}>
+                      <Calendar
+                        displayMonth={displayCollectionMonth}
+                        onMonthChange={setDisplayCollectionMonth}
+                        selectedDate={collectionDate}
+                        onDateSelect={handleSelectCollectionDate}
+                        minDate={deliveryDate}
+                        title="Select Collection Date"
+                      />
+                    </Collapse>
+
+                    {!isCollectionCalendarVisible && (
+                      <Alert 
+                        severity="success" 
+                        sx={{ 
+                          borderRadius: 3,
+                          backgroundColor: "rgba(16, 185, 129, 0.1)",
+                          border: "1px solid rgba(16, 185, 129, 0.2)",
+                        }}
+                      >
+                        <AlertTitle sx={{ fontWeight: 600 }}>Collection Scheduled</AlertTitle>
+                        <Typography variant="body2">
+                          Your skip will be collected automatically on the selected date. 
+                          You can change this date if needed.
+                        </Typography>
+                      </Alert>
+                    )}
+                  </Box>
+                </Fade>
+              </div>
             </div>
 
-            {isCollectionCalendarVisible && (
-              <Calendar
-                displayMonth={displayCollectionMonth}
-                onMonthChange={setDisplayCollectionMonth}
-                selectedDate={collectionDate}
-                onDateSelect={handleSelectCollectionDate}
-                minDate={deliveryDate}
-              />
-            )}
-          </div>
+            {/* Summary Section */}
+            <Fade in timeout={800}>
+              <Card sx={{ p: 3, mb: 4, background: "linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(30, 41, 59, 1) 100%)" }}>
+                <Typography
+                  variant="h6"
+                  sx={{
+                    fontWeight: 600,
+                    mb: 2,
+                    color: "text.primary",
+                  }}
+                >
+                  Booking Summary
+                </Typography>
+                
+                <div className="flex flex-col sm:flex-row gap-2">
+                  <div className="w-full sm:w-1/2">
+                    <Box sx={{ display: "flex", alignItems: "center", gap: 2, mb: 1 }}>
+                      <MapPin size={18} color="#6366f1" />
+                      <Typography variant="body2" color="text.secondary">
+                        Delivery: {deliveryDate.toLocaleDateString("en-GB")}
+                      </Typography>
+                    </Box>
+                  </div>
+                  <div className="w-full sm:w-1/2">
+                    <Box sx={{ display: "flex", alignItems: "center", gap: 2, mb: 1 }}>
+                      <Clock size={18} color="#ec4899" />
+                      <Typography variant="body2" color="text.secondary">
+                        Collection: {collectionDate.toLocaleDateString("en-GB")}
+                      </Typography>
+                    </Box>
+                  </div>
+                </div>
+                
+                <Divider sx={{ my: 2 }} />
+                
+                <Typography variant="body2" color="text.secondary">
+                  <strong>Hire Period:</strong> {getDaysDifference(deliveryDate, collectionDate)} days
+                </Typography>
+              </Card>
+            </Fade>
 
-          {/* MODIFICATION: Style des boutons de navigation et de la bordure */}
-          <div className="flex justify-between items-center pt-6 border-t border-slate-700">
-            <button
-              onClick={onBack}
-              className="text-slate-300 font-semibold px-4 py-2 rounded-lg hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-500"
+            {/* Navigation - Flottante */}
+            <Box
+              sx={{
+                position: "fixed",
+                bottom: 0,
+                left: 0,
+                right: 0,
+                zIndex: 1000,
+                backgroundColor: "background.paper",
+                borderTop: "1px solid",
+                borderColor: "divider",
+                boxShadow: "0 -4px 20px rgba(0, 0, 0, 0.3)",
+                p: { xs: 2, sm: 3 },
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                flexDirection: { xs: "column", sm: "row" },
+                gap: 2,
+              }}
             >
-              Back
-            </button>
-            {/* MODIFICATION: Bouton principal utilise la couleur primaire 'indigo' */}
-            <button
-              onClick={handleContinue}
-              className="bg-indigo-500 text-white font-semibold px-6 py-3 rounded-lg hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-800 focus:ring-indigo-500"
-            >
-              Continue to Payment
-            </button>
-          </div>
-        </div>
+              <Button
+                variant="outlined"
+                onClick={onBack}
+                startIcon={<ArrowLeft size={20} />}
+                sx={{
+                  px: 4,
+                  py: 1.5,
+                  order: { xs: 2, sm: 1 },
+                  width: { xs: "100%", sm: "auto" },
+                }}
+              >
+                Back to Permit Check
+              </Button>
+
+              <Button
+                variant="contained"
+                onClick={handleContinue}
+                endIcon={<ArrowRight size={20} />}
+                sx={{
+                  px: 4,
+                  py: 1.5,
+                  order: { xs: 1, sm: 2 },
+                  width: { xs: "100%", sm: "auto" },
+                }}
+              >
+                Continue to Payment
+              </Button>
+            </Box>
+          </Box>
+        </Container>
       </StepperDemo>
-    </div>
+    </ThemeProvider>
   );
 };
 
