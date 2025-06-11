@@ -2,12 +2,14 @@
 
 import { useState, useEffect } from "react";
 // CORRECTION 1: Remplacement de "Road" par "Route"
+// NOUVEL IMPORT: Ajout de UploadFile pour le Drawer
 import {
   ArrowLeft,
   ArrowRight,
   AlertCircle,
   Home as HomeIcon,
   Route,
+  Upload, // <-- NOUVEL IMPORT
 } from "lucide-react";
 import {
   Card,
@@ -21,6 +23,7 @@ import {
   Divider,
   Stack,
   Container,
+  Drawer, // <-- NOUVEL IMPORT
 } from "@mui/material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import StepperDemo from "./Stepper-demo";
@@ -50,10 +53,14 @@ const darkTheme = createTheme({
   },
 });
 
-const PermitCheck = ({ onBack }: PermitCheckProps) => {
+const PermitCheck = ({ onBack, onContinue }: PermitCheckProps) => {
   const [selectedSkip, setSelectedSkip] = useState<Skip | null>(null);
   const [placement, setPlacement] = useState<"private" | "public">("private");
   const [loading, setLoading] = useState(true);
+  // --- DÉBUT DES NOUVEAUX AJOUTS ---
+  // État pour contrôler l'ouverture du Drawer
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  // --- FIN DES NOUVEAUX AJOUTS ---
 
   useEffect(() => {
     const storedSkip = localStorage.getItem("selectedSkip");
@@ -63,10 +70,24 @@ const PermitCheck = ({ onBack }: PermitCheckProps) => {
     setLoading(false);
   }, []);
 
+  // --- MODIFICATION DE LA FONCTION handleContinue ---
+  // Ouvre le Drawer au lieu de simplement logger un message
   const handleContinue = () => {
     console.log("Placement selected:", placement);
-    // Navigation vers l'étape suivante
+    setIsDrawerOpen(true); // Ouvre le Drawer
   };
+
+  // Nouvelle fonction pour la continuation finale depuis le Drawer
+  const handleFinalContinue = () => {
+    console.log("Étape de la photo terminée. Passage à l'étape suivante.");
+    setIsDrawerOpen(false);
+    // Ici, vous appelleriez la vraie fonction de continuation si elle existe
+    if (onContinue) {
+      onContinue();
+    }
+  };
+  // --- FIN DES MODIFICATIONS ---
+
 
   if (loading) {
     return (
@@ -140,8 +161,6 @@ const PermitCheck = ({ onBack }: PermitCheckProps) => {
               }}
             >
               <Box sx={{ flex: 1 }}>
-                {" "}
-                {/* flex: 1 permet aux boîtes de prendre une taille égale */}
                 <Card
                   variant="outlined"
                   sx={{
@@ -180,8 +199,6 @@ const PermitCheck = ({ onBack }: PermitCheckProps) => {
               </Box>
 
               <Box sx={{ flex: 1 }}>
-                {" "}
-                {/* flex: 1 permet aux boîtes de prendre une taille égale */}
                 <Card
                   variant="outlined"
                   sx={{
@@ -209,7 +226,6 @@ const PermitCheck = ({ onBack }: PermitCheckProps) => {
                     }
                     label={
                       <Box sx={{ display: "flex", alignItems: "center", p: 2 }}>
-                        {/* CORRECTION 1: Utilisation de <Route /> */}
                         <Route size={24} style={{ marginRight: 16 }} />
                         <Box>
                           <Typography variant="h6">Public Road</Typography>
@@ -256,7 +272,6 @@ const PermitCheck = ({ onBack }: PermitCheckProps) => {
                 variant="outlined"
                 onClick={onBack}
                 startIcon={<ArrowLeft size={20} />}
-                // CORRECTION 2: Remplacement de fullWidth par la prop sx
                 sx={{ width: { xs: "100%", sm: "auto" } }}
               >
                 Back
@@ -268,7 +283,6 @@ const PermitCheck = ({ onBack }: PermitCheckProps) => {
                   onClick={onBack}
                   startIcon={<AlertCircle size={20} />}
                   color="warning"
-                  // CORRECTION 2: Remplacement de fullWidth par la prop sx
                   sx={{ width: { xs: "100%", sm: "auto" } }}
                 >
                   Choose Different Skip
@@ -278,7 +292,6 @@ const PermitCheck = ({ onBack }: PermitCheckProps) => {
                   variant="contained"
                   onClick={handleContinue}
                   endIcon={<ArrowRight size={20} />}
-                  // CORRECTION 2: Remplacement de fullWidth par la prop sx
                   sx={{ width: { xs: "100%", sm: "auto" } }}
                 >
                   Continue
@@ -288,6 +301,80 @@ const PermitCheck = ({ onBack }: PermitCheckProps) => {
           </Card>
         </Container>
       </StepperDemo>
+
+      {/* --- DÉBUT DU NOUVEAU BLOC : LE DRAWER --- */}
+      <Drawer
+        anchor="left"
+        open={isDrawerOpen}
+        onClose={() => setIsDrawerOpen(false)}
+      >
+        <Box
+          sx={{ 
+            width: { xs: '90vw', sm: 400 }, 
+            p: 3, 
+            height: '100%', 
+            display: 'flex', 
+            flexDirection: 'column',
+            backgroundColor: 'background.paper'
+          }}
+          role="presentation"
+        >
+          <Box>
+            <Typography variant="h5" component="h2" sx={{ fontWeight: 700, mb: 1 }}>
+              Skip Placement Photo
+            </Typography>
+            <Typography variant="body1" color="text.secondary" sx={{ mb: 4 }}>
+              Please provide a photo of where you plan to place the skip. This
+              helps us ensure proper placement and identify any potential access
+              issues.
+            </Typography>
+            
+            {/* Le bouton agit comme un label pour l'input de fichier caché */}
+            <Button
+              component="label"
+              role="button"
+              variant="contained"
+              fullWidth
+              startIcon={<Upload />}
+              sx={{ mb: 2 }}
+            >
+              Upload Photo
+              <input type="file" accept="image/*" hidden />
+            </Button>
+            
+            <Button
+              variant="text"
+              size="small"
+              onClick={handleFinalContinue} // Permet de sauter l'étape
+            >
+              Skip this step
+            </Button>
+          </Box>
+          
+          {/* Les boutons d'action sont poussés en bas du Drawer */}
+          <Stack
+            direction="row"
+            justifyContent="space-between"
+            sx={{ mt: 'auto', pt: 2 }}
+          >
+            <Button
+              variant="outlined"
+              onClick={() => setIsDrawerOpen(false)}
+              startIcon={<ArrowLeft size={20} />}
+            >
+              Back
+            </Button>
+            <Button
+              variant="contained"
+              onClick={handleFinalContinue}
+              endIcon={<ArrowRight size={20} />}
+            >
+              Continue
+            </Button>
+          </Stack>
+        </Box>
+      </Drawer>
+      {/* --- FIN DU NOUVEAU BLOC : LE DRAWER --- */}
     </ThemeProvider>
   );
 };
