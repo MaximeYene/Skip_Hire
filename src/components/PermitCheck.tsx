@@ -23,7 +23,7 @@ import {
   Divider,
   Stack,
   Container,
-  Drawer, // <-- NOUVEL IMPORT
+  Drawer,
 } from "@mui/material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import StepperDemo from "./Stepper-demo";
