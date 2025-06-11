@@ -125,7 +125,7 @@ const Stepper = ({ steps, currentStep }: { steps: string[]; currentStep: string 
 const getStepDescription = (step: string): string => {
   const descriptions: Record<string, string> = {
     Postcode: "Enter your delivery location",
-    "Waste Type": "Select the type of waste you're disposing of",
+    "Waste Type": "",
     "Select Skip": "Choose the right skip size for your needs",
     "Permit Check": "We'll check if you need a permit for your location",
     "Choose Date": "Pick your preferred delivery and collection dates",
