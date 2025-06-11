@@ -66,6 +66,10 @@ export default function Home({ onContinue, onAddressSelect }: HomeProps) {
       if (data.status === 200) {
         setSelectedAddressDetails(data.result);
         onAddressSelect(data.result);
+        // --- AJOUT IMPORTANT ---
+        // Sauvegarde les détails de l'adresse pour les étapes suivantes
+        localStorage.setItem("addressDetails", JSON.stringify(data.result));
+        // --- FIN DE L'AJOUT ---
       } else {
         console.error("Postcode not found:", data.error);
         setSelectedAddressDetails(null);

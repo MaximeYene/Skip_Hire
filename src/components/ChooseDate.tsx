@@ -1,5 +1,5 @@
-import React, { useState, useMemo } from 'react';
-import StepperDemo from './Stepper-demo';
+import React, { useState, useMemo } from "react";
+import StepperDemo from "./Stepper-demo";
 
 // --- Helper Components & Types ---
 
@@ -22,8 +22,14 @@ interface chooseDateProps {
 }
 
 // Un composant réutilisable pour le calendrier
-const Calendar: React.FC<CalendarProps> = ({ displayMonth, selectedDate, minDate, onMonthChange, onDateSelect }) => {
-  const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+const Calendar: React.FC<CalendarProps> = ({
+  displayMonth,
+  selectedDate,
+  minDate,
+  onMonthChange,
+  onDateSelect,
+}) => {
+  const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
   const monthData = useMemo(() => {
     const year = displayMonth.getFullYear();
@@ -44,11 +50,15 @@ const Calendar: React.FC<CalendarProps> = ({ displayMonth, selectedDate, minDate
   }, [displayMonth]);
 
   const handlePrevMonth = () => {
-    onMonthChange(new Date(displayMonth.getFullYear(), displayMonth.getMonth() - 1, 1));
+    onMonthChange(
+      new Date(displayMonth.getFullYear(), displayMonth.getMonth() - 1, 1)
+    );
   };
 
   const handleNextMonth = () => {
-    onMonthChange(new Date(displayMonth.getFullYear(), displayMonth.getMonth() + 1, 1));
+    onMonthChange(
+      new Date(displayMonth.getFullYear(), displayMonth.getMonth() + 1, 1)
+    );
   };
 
   const isSameDay = (date1: Date | null, date2: Date | null) => {
@@ -65,15 +75,24 @@ const Calendar: React.FC<CalendarProps> = ({ displayMonth, selectedDate, minDate
     <div className="bg-slate-800 p-4 rounded-lg border border-slate-700 w-full max-w-sm mx-auto">
       {/* Header du calendrier */}
       <div className="flex justify-between items-center mb-4">
-         {/* MODIFICATION: Style des boutons de navigation du mois */}
-        <button onClick={handlePrevMonth} className="p-2 rounded-full hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+        {/* MODIFICATION: Style des boutons de navigation du mois */}
+        <button
+          onClick={handlePrevMonth}
+          className="p-2 rounded-full hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+        >
           ← {/* Left Arrow */}
         </button>
         {/* MODIFICATION: Couleur du texte */}
         <span className="text-lg font-semibold text-slate-200">
-          {displayMonth.toLocaleString('fr-FR', { month: 'long', year: 'numeric' })}
+          {displayMonth.toLocaleString("fr-FR", {
+            month: "long",
+            year: "numeric",
+          })}
         </span>
-        <button onClick={handleNextMonth} className="p-2 rounded-full hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+        <button
+          onClick={handleNextMonth}
+          className="p-2 rounded-full hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+        >
           → {/* Right Arrow */}
         </button>
       </div>
@@ -81,21 +100,33 @@ const Calendar: React.FC<CalendarProps> = ({ displayMonth, selectedDate, minDate
       {/* Grille des jours */}
       <div className="grid grid-cols-7 gap-1 text-center">
         {/* MODIFICATION: Couleur du texte des jours de la semaine */}
-        {daysOfWeek.map(day => (
-          <div key={day} className="font-medium text-xs text-slate-400">{day}</div>
+        {daysOfWeek.map((day) => (
+          <div key={day} className="font-medium text-xs text-slate-400">
+            {day}
+          </div>
         ))}
         {monthData.map((date, index) => {
           if (!date) {
             return <div key={`empty-${index}`} />;
           }
           const isSelected = isSameDay(date, selectedDate);
-          const isPast = minDate ? date < minDate && !isSameDay(date, minDate) : false;
-          
+          const isPast = minDate
+            ? date < minDate && !isSameDay(date, minDate)
+            : false;
+
           // MODIFICATION: Classes des boutons de date pour le thème sombre
           const buttonClasses = `
             w-10 h-10 flex items-center justify-center rounded-full transition-colors
-            ${isPast ? 'text-slate-600 cursor-not-allowed' : 'hover:bg-slate-700'}
-            ${isSelected ? 'bg-indigo-500 text-white font-bold' : 'text-slate-300'}
+            ${
+              isPast
+                ? "text-slate-600 cursor-not-allowed"
+                : "hover:bg-slate-700"
+            }
+            ${
+              isSelected
+                ? "bg-indigo-500 text-white font-bold"
+                : "text-slate-300"
+            }
           `;
 
           return (
@@ -114,10 +145,9 @@ const Calendar: React.FC<CalendarProps> = ({ displayMonth, selectedDate, minDate
   );
 };
 
-
 // --- Composant Principal ---
 
-const ChooseDate = ({ onBack }: chooseDateProps) => {
+const ChooseDate = ({ onBack, onContinue }: chooseDateProps) => {
   const today = new Date();
   today.setHours(0, 0, 0, 0); // Normalise à minuit pour les comparaisons
 
@@ -126,16 +156,19 @@ const ChooseDate = ({ onBack }: chooseDateProps) => {
     tomorrow.setDate(today.getDate() + 1);
     return tomorrow;
   });
-  
+
   const [collectionDate, setCollectionDate] = useState<Date>(() => {
     const initialCollection = new Date(deliveryDate);
     initialCollection.setDate(deliveryDate.getDate() + 7);
     return initialCollection;
   });
 
-  const [displayDeliveryMonth, setDisplayDeliveryMonth] = useState(deliveryDate);
-  const [displayCollectionMonth, setDisplayCollectionMonth] = useState(collectionDate);
-  const [isCollectionCalendarVisible, setCollectionCalendarVisible] = useState(false);
+  const [displayDeliveryMonth, setDisplayDeliveryMonth] =
+    useState(deliveryDate);
+  const [displayCollectionMonth, setDisplayCollectionMonth] =
+    useState(collectionDate);
+  const [isCollectionCalendarVisible, setCollectionCalendarVisible] =
+    useState(false);
 
   const handleSelectDeliveryDate = (date: Date) => {
     setDeliveryDate(date);
@@ -144,18 +177,28 @@ const ChooseDate = ({ onBack }: chooseDateProps) => {
     setCollectionDate(newCollectionDate);
     setDisplayCollectionMonth(newCollectionDate);
   };
-  
+
   const handleSelectCollectionDate = (date: Date) => {
     setCollectionDate(date);
   };
-  
+
   const formatFullDate = (date: Date): string => {
-    return date.toLocaleDateString('en-GB', {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
+    return date.toLocaleDateString("en-GB", {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
     });
+  };
+
+  const handleContinue = () => {
+    // Sauvegarde les dates sélectionnées dans localStorage
+    localStorage.setItem("deliveryDate", deliveryDate.toISOString());
+    localStorage.setItem("collectionDate", collectionDate.toISOString());
+    // Appelle la fonction pour passer à l'étape suivante
+    if (onContinue) {
+      onContinue();
+    }
   };
 
   return (
@@ -164,44 +207,57 @@ const ChooseDate = ({ onBack }: chooseDateProps) => {
       <StepperDemo currentStep="Choose Date">
         {/* MODIFICATION: Fond de la carte principale et ombre adaptée */}
         <div className="max-w-2xl mx-auto bg-slate-800 rounded-xl shadow-lg p-6 sm:p-8 space-y-8">
-        
-        <div>
-          {/* MODIFICATION: Couleurs du titre et du paragraphe */}
-          <h1 className="text-3xl font-bold text-slate-100">Choose Your Delivery Date</h1>
-          <p className="mt-2 text-slate-400">
-            Select your preferred skip delivery date. We'll aim to deliver between 7am and 6pm on your chosen day.
-          </p>
-        </div>
+          <div>
+            {/* MODIFICATION: Couleurs du titre et du paragraphe */}
+            <h1 className="text-3xl font-bold text-slate-100">
+              Choose Your Delivery Date
+            </h1>
+            <p className="mt-2 text-slate-400">
+              Select your preferred skip delivery date. We'll aim to deliver
+              between 7am and 6pm on your chosen day.
+            </p>
+          </div>
 
-        <div className="space-y-4">
-          {/* MODIFICATION: Couleur du sous-titre */}
-          <h2 className="text-xl font-semibold text-slate-200">Delivery Date</h2>
-          <Calendar
-            displayMonth={displayDeliveryMonth}
-            onMonthChange={setDisplayDeliveryMonth}
-            selectedDate={deliveryDate}
-            onDateSelect={handleSelectDeliveryDate}
-            minDate={today}
-          />
-        </div>
+          <div className="space-y-4">
+            {/* MODIFICATION: Couleur du sous-titre */}
+            <h2 className="text-xl font-semibold text-slate-200">
+              Delivery Date
+            </h2>
+            <Calendar
+              displayMonth={displayDeliveryMonth}
+              onMonthChange={setDisplayDeliveryMonth}
+              selectedDate={deliveryDate}
+              onDateSelect={handleSelectDeliveryDate}
+              minDate={today}
+            />
+          </div>
 
-        <div className="space-y-4">
-            <h2 className="text-xl font-semibold text-slate-200">Collection Date</h2>
+          <div className="space-y-4">
+            <h2 className="text-xl font-semibold text-slate-200">
+              Collection Date
+            </h2>
             {/* MODIFICATION: Bordure et fond de la zone de date de collecte */}
             <div className="flex items-center justify-between p-4 border border-slate-700 rounded-lg bg-slate-900/50">
-                <div>
-                    {/* MODIFICATION: Couleur du texte pour la date et le bouton "Change" */}
-                    <p className="font-semibold text-indigo-400">{formatFullDate(collectionDate)}</p>
-                    <p className="text-sm text-slate-400 mt-1">We'll collect your skip on this date. Please ensure it's accessible.</p>
-                </div>
-                <button
-                    onClick={() => setCollectionCalendarVisible(!isCollectionCalendarVisible)}
-                    className="text-indigo-400 font-semibold hover:underline focus:outline-none"
-                >
-                    {isCollectionCalendarVisible ? 'Hide' : 'Change'}
-                </button>
+              <div>
+                {/* MODIFICATION: Couleur du texte pour la date et le bouton "Change" */}
+                <p className="font-semibold text-indigo-400">
+                  {formatFullDate(collectionDate)}
+                </p>
+                <p className="text-sm text-slate-400 mt-1">
+                  We'll collect your skip on this date. Please ensure it's
+                  accessible.
+                </p>
+              </div>
+              <button
+                onClick={() =>
+                  setCollectionCalendarVisible(!isCollectionCalendarVisible)
+                }
+                className="text-indigo-400 font-semibold hover:underline focus:outline-none"
+              >
+                {isCollectionCalendarVisible ? "Hide" : "Change"}
+              </button>
             </div>
-          
+
             {isCollectionCalendarVisible && (
               <Calendar
                 displayMonth={displayCollectionMonth}
@@ -211,21 +267,25 @@ const ChooseDate = ({ onBack }: chooseDateProps) => {
                 minDate={deliveryDate}
               />
             )}
-        </div>
+          </div>
 
-        {/* MODIFICATION: Style des boutons de navigation et de la bordure */}
-        <div className="flex justify-between items-center pt-6 border-t border-slate-700">
-          <button
-           onClick={onBack}
-           className="text-slate-300 font-semibold px-4 py-2 rounded-lg hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-500">
-            Back
-          </button>
-          {/* MODIFICATION: Bouton principal utilise la couleur primaire 'indigo' */}
-          <button className="bg-indigo-500 text-white font-semibold px-6 py-3 rounded-lg hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-800 focus:ring-indigo-500">
-            Continue to Payment
-          </button>
+          {/* MODIFICATION: Style des boutons de navigation et de la bordure */}
+          <div className="flex justify-between items-center pt-6 border-t border-slate-700">
+            <button
+              onClick={onBack}
+              className="text-slate-300 font-semibold px-4 py-2 rounded-lg hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-500"
+            >
+              Back
+            </button>
+            {/* MODIFICATION: Bouton principal utilise la couleur primaire 'indigo' */}
+            <button
+              onClick={handleContinue}
+              className="bg-indigo-500 text-white font-semibold px-6 py-3 rounded-lg hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-800 focus:ring-indigo-500"
+            >
+              Continue to Payment
+            </button>
+          </div>
         </div>
-      </div>
       </StepperDemo>
     </div>
   );

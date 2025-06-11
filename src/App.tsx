@@ -6,10 +6,11 @@ import WasteTypeSelector from "./components/WasteTypeSelector";
 import SelectSkip from "./components/SelectSkip"; // 1. Importer le nouveau composant
 import PermitCheck from "./components/PermitCheck";
 import ChooseDate from "./components/ChooseDate";
+import Payments from "./components/Payments";
 
 function App() {
   // 2. Ajouter 'selectSkip' comme étape possible
-  const [currentStep, setCurrentStep] = useState<"home" | "wasteType" | "selectSkip" | "permitCheck" | "chooseDate">("home");
+  const [currentStep, setCurrentStep] = useState<"home" | "wasteType" | "selectSkip" | "permitCheck" | "chooseDate" | "payment">("home");
   const [, setSelectedAddress] = useState<any>(null);
   const [, setWasteSelection] = useState<string[]>([]); // Ajout pour stocker les sélections
 
@@ -54,10 +55,16 @@ function App() {
         );
         case "chooseDate":
         return (
-          // 5. Afficher le composant chooseDate et lui donner un moyen de revenir en arrière
           <ChooseDate
-          onBack={() => setCurrentStep("permitCheck")} 
+            onBack={() => setCurrentStep("permitCheck")}
+            onContinue={() => setCurrentStep("payment")} // 3. Naviguer vers le paiement
           />
+        );
+      case "payment": // 4. Ajouter le cas pour le paiement
+        return (
+            <Payments
+                onBack={() => setCurrentStep("chooseDate")}
+            />
         );
       default:
         return (
