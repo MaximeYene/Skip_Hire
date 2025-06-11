@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { ArrowLeft, ArrowRight, Check, Info, Clock, MapPin, Weight } from "lucide-react"
+import { ArrowLeft, ArrowRight, Check, Info, Clock, MapPin, Weight } from 'lucide-react'
 import StepperDemo from "./Stepper-demo"
 import {
   Card,
@@ -218,12 +218,12 @@ const handleSelectSkip = (id: number) => {
   return (
     <ThemeProvider theme={darkTheme}>
       <StepperDemo currentStep="Select Skip">
-        <Container maxWidth="xl" sx={{ px: { xs: 2, sm: 3 } }}>
+        <Container maxWidth="xl" sx={{ px: { xs: 2, sm: 3 }, pb: { xs: 16, sm: 12 } }}>
           <Box sx={{ color: "text.primary" }}>
             {/* Header Section */}
             <Box sx={{ mb: 6, textAlign: "center" }}>
               <Typography
-                variant="h3"
+                variant="h4"
                 component="h1"
                 sx={{
                   fontWeight: 700,
@@ -245,7 +245,7 @@ const handleSelectSkip = (id: number) => {
                   lineHeight: 1.6,
                 }}
               >
-                Select the ideal skip size for your project. All prices exclude VAT and include delivery and collection.
+                Choose the right skip size for your project — prices include delivery and collection, excluding VAT.
               </Typography>
             </Box>
 
@@ -298,7 +298,7 @@ const handleSelectSkip = (id: number) => {
                           lg: "calc(33.333% - 16px)",
                           xl: "calc(25% - 18px)",
                         },
-                        maxWidth: "380px",
+                        maxWidth: { xs: "320px", sm: "380px" },
                       }}
                     >
                       <Card
@@ -355,7 +355,7 @@ const handleSelectSkip = (id: number) => {
                         {/* Image Section */}
                         <Box
                           sx={{
-                            height: 220,
+                            height: { xs: 160, sm: 220 },
                             background: "linear-gradient(135deg, #334155 0%, #475569 100%)",
                             display: "flex",
                             alignItems: "center",
@@ -394,7 +394,7 @@ const handleSelectSkip = (id: number) => {
                               variant="h2"
                               sx={{
                                 fontWeight: 800,
-                                fontSize: { xs: "2.5rem", sm: "3rem" },
+                                fontSize: { xs: "2rem", sm: "2.5rem", md: "3rem" },
                                 background: "linear-gradient(135deg, #f8fafc 0%, #94a3b8 100%)",
                                 backgroundClip: "text",
                                 WebkitBackgroundClip: "text",
@@ -418,7 +418,7 @@ const handleSelectSkip = (id: number) => {
                         </Box>
 
                         {/* Content Section */}
-                        <CardContent sx={{ flexGrow: 1, p: 3 }}>
+                        <CardContent sx={{ flexGrow: 1, p: { xs: 2, sm: 3 } }}>
                           <Typography
                             variant="h5"
                             component="h3"
@@ -510,7 +510,7 @@ const handleSelectSkip = (id: number) => {
                         <Divider sx={{ borderColor: "rgba(148, 163, 184, 0.1)" }} />
 
                         {/* Action Button */}
-                        <Box sx={{ p: 3 }}>
+                        <Box sx={{ p: { xs: 2, sm: 3 } }}>
                           <Button
                             fullWidth
                             variant={selectedSkipId === skip.id ? "contained" : "outlined"}
@@ -532,15 +532,24 @@ const handleSelectSkip = (id: number) => {
               </Box>
             )}
 
-            {/* Navigation */}
+            {/* Navigation - Flottante */}
             <Box
               sx={{
+                position: "fixed",
+                bottom: 0,
+                left: 0,
+                right: 0,
+                zIndex: 1000,
+                backgroundColor: "background.paper",
+                borderTop: "1px solid",
+                borderColor: "divider",
+                boxShadow: "0 -4px 20px rgba(0, 0, 0, 0.3)",
+                p: { xs: 2, sm: 3 },
                 display: "flex",
                 justifyContent: "space-between",
                 alignItems: "center",
                 flexDirection: { xs: "column", sm: "row" },
                 gap: 2,
-                mt: 4,
               }}
             >
               <Button

@@ -18,7 +18,7 @@ const StepperDemo = ({ currentStep, children }: StepperDemoProps) => {
           key={currentStep}
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
-          className="bg-slate-800 rounded-lg shadow-lg border border-slate-700 p-8 mb-8"
+          className="bg-slate-800 rounded-lg shadow-lg border border-slate-700 py-4 mb-8"
         >
           {children}
         </motion.div>
