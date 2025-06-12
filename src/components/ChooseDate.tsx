@@ -1,6 +1,3 @@
-// --- START OF FILE ChooseDate.tsx ---
-
-"use client";
 
 import { useState } from "react";
 import { ArrowLeft, ArrowRight, Clock, MapPin } from 'lucide-react';
@@ -28,7 +25,7 @@ interface ChooseDateProps {
   onContinue?: () => void;
 }
 
-// Thème sombre moderne - Correspondant aux autres composants
+// Modern dark theme – Consistent with other components
 const darkTheme = createTheme({
   palette: {
     mode: "dark",
@@ -118,16 +115,15 @@ const darkTheme = createTheme({
   },
 });
 
-// --- NOUVELLE FONCTION UTILITAIRE ---
 /**
- * Trouve le prochain jour de la semaine disponible (pas un samedi ou un dimanche)
- * à partir de la date fournie (inclusive).
- * @param date - La date de départ
- * @returns La première date disponible qui n'est pas un week-end.
+ * Find the next available weekday (not a Saturday or Sunday).
+ * Starting from the provided date (inclusive).
+ * @param date - The start date.
+ * @returns The first available date that is not a weekend.
  */
 const getNextAvailableWeekday = (date: Date): Date => {
   const newDate = new Date(date);
-  // getDay() renvoie 0 pour Dimanche et 6 pour Samedi
+  // getDay() returns 0 for Sunday and 6 for Saturday.
   while (newDate.getDay() === 0 || newDate.getDay() === 6) {
     newDate.setDate(newDate.getDate() + 1);
   }
@@ -135,21 +131,17 @@ const getNextAvailableWeekday = (date: Date): Date => {
 };
 
 
-// --- Composant Principal ---
 const ChooseDate = ({ onBack, onContinue }: ChooseDateProps) => {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
-  // --- MODIFICATION ICI ---
-  // S'assure que la date de livraison initiale est un jour de semaine
+
   const [deliveryDate, setDeliveryDate] = useState<Date>(() => {
     const tomorrow = new Date(today);
     tomorrow.setDate(today.getDate() + 1);
     return getNextAvailableWeekday(tomorrow);
   });
 
-  // --- MODIFICATION ICI ---
-  // S'assure que la date de collecte initiale est un jour de semaine
   const [collectionDate, setCollectionDate] = useState<Date>(() => {
     const initialCollection = new Date(deliveryDate);
     initialCollection.setDate(deliveryDate.getDate() + 7);
@@ -160,14 +152,11 @@ const ChooseDate = ({ onBack, onContinue }: ChooseDateProps) => {
   const [displayCollectionMonth, setDisplayCollectionMonth] = useState(collectionDate);
   const [isCollectionCalendarVisible, setCollectionCalendarVisible] = useState(false);
 
-  // --- MODIFICATION ICI ---
-  // S'assure que la date de collecte calculée est un jour de semaine
   const handleSelectDeliveryDate = (date: Date) => {
     setDeliveryDate(date);
     const newCollectionDate = new Date(date);
     newCollectionDate.setDate(date.getDate() + 7);
 
-    // Ajuste la date de collecte au prochain jour ouvrable si elle tombe un week-end
     const availableCollectionDate = getNextAvailableWeekday(newCollectionDate);
     
     setCollectionDate(availableCollectionDate);
@@ -414,7 +403,7 @@ const ChooseDate = ({ onBack, onContinue }: ChooseDateProps) => {
               </Card>
             </Fade>
 
-            {/* Navigation - Flottante */}
+            {/* Floating Navigation */}
             <Box
               sx={{
                 position: "fixed",

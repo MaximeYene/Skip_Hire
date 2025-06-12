@@ -1,4 +1,3 @@
-"use client";
 
 import { useState, useEffect } from "react";
 import { ArrowLeft, ArrowRight, AlertCircle, HomeIcon, Route, Upload, Check, Info } from 'lucide-react';
@@ -34,7 +33,7 @@ interface PermitCheckProps {
   onContinue?: () => void;
 }
 
-// Thème sombre moderne - Correspondant au thème de SelectSkip
+// Modern dark theme – Consistent with other components
 const darkTheme = createTheme({
   palette: {
     mode: "dark",
@@ -143,7 +142,6 @@ const PermitCheck = ({ onBack, onContinue }: PermitCheckProps) => {
       setSelectedSkip(JSON.parse(storedSkip));
     }
     
-    // Simulation d'un chargement pour montrer l'animation
     const timer = setTimeout(() => {
       setLoading(false);
     }, 800);
@@ -169,7 +167,6 @@ const PermitCheck = ({ onBack, onContinue }: PermitCheckProps) => {
     if (file) {
       setIsUploading(true);
       
-      // Simuler un délai de chargement
       setTimeout(() => {
         const reader = new FileReader();
         reader.onload = (e) => {
@@ -639,7 +636,7 @@ const PermitCheck = ({ onBack, onContinue }: PermitCheckProps) => {
               </Fade>
             )}
 
-            {/* Navigation - Flottante */}
+            {/* Floating Navigation */}
             <Box
               sx={{
                 position: "fixed",
@@ -708,7 +705,7 @@ const PermitCheck = ({ onBack, onContinue }: PermitCheckProps) => {
         </Container>
       </StepperDemo>
 
-      {/* Drawer amélioré */}
+      {/* Drawer */}
       <Drawer
         anchor="left"
         open={isDrawerOpen}
@@ -863,7 +860,6 @@ const PermitCheck = ({ onBack, onContinue }: PermitCheckProps) => {
             Skip this step
           </Button>
           
-          {/* Les boutons d'action sont poussés en bas du Drawer */}
           <Stack
             direction="row"
             justifyContent="space-between"

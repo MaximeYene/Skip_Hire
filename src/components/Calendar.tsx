@@ -1,4 +1,3 @@
-// --- START OF FILE Calendar.tsx ---
 
 import React, { useMemo } from "react";
 import { CalendarIcon, ChevronLeft, ChevronRight } from 'lucide-react';
@@ -93,7 +92,7 @@ export const Calendar: React.FC<CalendarProps> = ({
         </Typography>
       )}
 
-      {/* Header du calendrier */}
+      {/* Calendar Header */}
       <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 3 }}>
         <IconButton onClick={handlePrevMonth} size="small">
           <ChevronLeft size={20} />
@@ -118,9 +117,9 @@ export const Calendar: React.FC<CalendarProps> = ({
         </IconButton>
       </Box>
 
-      {/* Grille des jours */}
+      {/* Day Grid */}
       <div className="grid grid-cols-7 gap-0.5">
-        {/* En-têtes des jours de la semaine */}
+        {/* Weekday Headers */}
         {daysOfWeek.map((day) => (
           <div key={day} className="flex justify-center">
             <Typography
@@ -138,7 +137,7 @@ export const Calendar: React.FC<CalendarProps> = ({
           </div>
         ))}
         
-        {/* Dates du mois */}
+        {/* Month Dates */}
         {monthData.map((date, index) => {
           if (!date) {
             return <div key={`empty-${index}`} />;
@@ -148,16 +147,16 @@ export const Calendar: React.FC<CalendarProps> = ({
           const isPast = minDate ? date < minDate && !isSameDay(date, minDate) : false;
           const todayDate = isToday(date);
           
-          // --- MODIFICATION ICI ---
-          // Vérifie si la date est un samedi (6) ou un dimanche (0)
+          // --- MODIFICATION HERE ---
+          // Check if the date is a Saturday (6) or a Sunday (0)
           const isWeekend = date.getDay() === 0 || date.getDay() === 6;
           const isDisabled = isPast || isWeekend;
 
           return (
             <div key={date.toISOString()} className="flex justify-center">
               <Button
-                disabled={isDisabled} // Utilise la nouvelle variable
-                onClick={() => !isDisabled && onDateSelect(date)} // Sécurité supplémentaire
+                disabled={isDisabled}
+                onClick={() => !isDisabled && onDateSelect(date)}
                 sx={{
                   minWidth: { xs: 32, sm: 40 },
                   height: { xs: 32, sm: 40 },
@@ -165,8 +164,8 @@ export const Calendar: React.FC<CalendarProps> = ({
                   p: 0,
                   fontSize: { xs: "0.75rem", sm: "0.875rem" },
                   fontWeight: isSelected ? 700 : todayDate ? 600 : 400,
-                  // --- MODIFICATION ICI ---
-                  // Applique le style désactivé si c'est le passé OU un week-end
+                  // --- MODIFICATION HERE ---
+                  // Apply the disabled style if it's in the past OR a weekend
                   color: isDisabled 
                     ? "text.disabled" 
                     : isSelected 
@@ -182,8 +181,8 @@ export const Calendar: React.FC<CalendarProps> = ({
                   border: todayDate && !isSelected ? "1px solid" : "none",
                   borderColor: "primary.main",
                   "&:hover": {
-                    // --- MODIFICATION ICI ---
-                    // Pas d'effet au survol si désactivé
+                    // --- MODIFICATION HERE ---
+                    // No hover effect if disabled.
                     backgroundColor: isSelected 
                       ? "primary.dark" 
                       : isDisabled 

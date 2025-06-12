@@ -1,4 +1,3 @@
-"use client"
 
 import { useState, useEffect } from "react"
 import { ArrowLeft, ArrowRight, Check, Info, Clock, MapPin, Weight } from 'lucide-react'
@@ -35,7 +34,7 @@ interface SelectSkipProps {
   onContinue?: () => void
 }
 
-// Thème sombre moderne
+// // Modern dark theme – Consistent with other components
 const darkTheme = createTheme({
   palette: {
     mode: "dark",
@@ -137,7 +136,7 @@ const SelectSkip = ({ onBack, onContinue }: SelectSkipProps) => {
         console.error("Error loading skips:", error)
         setIsLoading(false)
 
-        // Données de fallback
+        // Fallback datas
         setSkips([
           {
             id: 1,
@@ -191,12 +190,11 @@ const SelectSkip = ({ onBack, onContinue }: SelectSkipProps) => {
       })
   }, [])
 
-  // Dans la fonction handleSelectSkip
+
 const handleSelectSkip = (id: number) => {
   const newSelectedId = id === selectedSkipId ? null : id
   setSelectedSkipId(newSelectedId)
   
-  // Stocker le skip sélectionné
   if (newSelectedId) {
     const selected = skips.find(skip => skip.id === newSelectedId)
     if (selected) {
@@ -370,7 +368,7 @@ const handleSelectSkip = (id: number) => {
                               display: "block",
                             }}
                             onError={(e) => {
-                              // Fallback en cas d'erreur de chargement d'image
+                              // Fallback in case of image loading error.
                               const target = e.target as HTMLImageElement;
                               target.style.display = "none";
                               target.parentElement!.innerHTML = `
@@ -423,7 +421,7 @@ const handleSelectSkip = (id: number) => {
                             }}
                           />
                           
-                          {/* Overlay avec le numéro de la benne */}
+
                           <Box
                             sx={{
                               position: "absolute",
@@ -565,7 +563,7 @@ const handleSelectSkip = (id: number) => {
               </Box>
             )}
 
-            {/* Navigation - Flottante */}
+            {/* Floating Navigation */}
             <Box
               sx={{
                 position: "fixed",

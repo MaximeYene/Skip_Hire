@@ -1,4 +1,3 @@
-"use client"
 
 import type React from "react"
 
@@ -88,22 +87,21 @@ const WasteTypeSelector = ({ onBack, onContinue }: WasteTypeSelectorProps) => {
 
   const handleNoHeavyWaste = () => {
     setDrawerStep("plasterboardQuestion")
-    setPlasterboardSelection(null) // Reset selection when moving to this step
+    setPlasterboardSelection(null)
   }
 
   const handleContinueFromPlasterboardQuestion = () => {
     if (plasterboardSelection === "yes") {
       setDrawerStep("plasterboardPercentage")
     } else {
-      // "no" is selected
-      onContinue([]) // No heavy waste, no plasterboard
+      onContinue([])
       closeDrawer()
     }
   }
 
   const handleFinalContinue = () => {
     if (plasterboardPercentage) {
-      onContinue([plasterboardPercentage]) // Pass the specific plasterboard ID
+      onContinue([plasterboardPercentage])
       closeDrawer()
     }
   }
@@ -216,11 +214,11 @@ const WasteTypeSelector = ({ onBack, onContinue }: WasteTypeSelectorProps) => {
         onClose={closeDrawer}
         sx={{
           "& .MuiDrawer-paper": {
-            width: "450px", // Slightly wider for better content display
+            width: "450px",
             maxWidth: "95vw",
-            backgroundColor: "#1e293b", // slate-800
-            color: "#e2e8f0", // slate-200
-            borderRight: "1px solid #334155", // slate-700
+            backgroundColor: "#1e293b",
+            color: "#e2e8f0",
+            borderRight: "1px solid #334155",
           },
         }}
       >
@@ -319,7 +317,7 @@ const WasteTypeSelector = ({ onBack, onContinue }: WasteTypeSelectorProps) => {
             </>
           )}
 
-          {/* Step 3: Plasterboard Percentage Selection */}
+          {/*Step 3: Plasterboard Percentage Selection */}
           {drawerStep === "plasterboardPercentage" && (
             <>
               <h3 className="text-xl font-bold text-slate-100 mb-2 pr-8">

@@ -1,4 +1,3 @@
-"use client";
 
 import { useState } from "react";
 import { Input } from "@headlessui/react";
@@ -66,10 +65,9 @@ export default function Home({ onContinue, onAddressSelect }: HomeProps) {
       if (data.status === 200) {
         setSelectedAddressDetails(data.result);
         onAddressSelect(data.result);
-        // --- AJOUT IMPORTANT ---
-        // Sauvegarde les détails de l'adresse pour les étapes suivantes
+
+        // Save the address details for the next steps.
         localStorage.setItem("addressDetails", JSON.stringify(data.result));
-        // --- FIN DE L'AJOUT ---
       } else {
         console.error("Postcode not found:", data.error);
         setSelectedAddressDetails(null);

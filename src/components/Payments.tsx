@@ -1,4 +1,3 @@
-"use client";
 
 import { useState, useEffect } from "react";
 import { ArrowLeft, ArrowRight, ShieldCheck, CreditCard, CalendarIcon, UserCircle, Check, Info, MapPin, Clock, Package } from 'lucide-react';
@@ -47,7 +46,7 @@ interface PaymentsProps {
   onBack: () => void;
 }
 
-// Thème sombre moderne - Correspondant aux autres composants
+// Modern dark theme – Consistent with other components
 const darkTheme = createTheme({
   palette: {
     mode: "dark",
@@ -559,7 +558,7 @@ const Payments = ({ onBack }: PaymentsProps) => {
               </div>
             </div>
 
-            {/* Navigation - Flottante */}
+            {/* Floating Navigation */}
             <Box
               sx={{
                 position: "fixed",
